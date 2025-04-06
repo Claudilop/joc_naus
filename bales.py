@@ -6,7 +6,8 @@ guanyador = 0
 AMPLADA = 800
 ALTURA = 600
 BACKGROUND_IMAGE = 'assets/fons.png'
-MUSICA_FONS = 'assets/music.mp3'
+MUSICA_FONS = 'assets/musica.mp3'
+DISPARO_SO ='assets/disparo.wav'
 WHITE = (255,255,255)
 MAGENTA = (207,52,118)
 
@@ -46,6 +47,16 @@ temps_ultima_bala_jugador2 = 0 #per contar el temps que ha passat des de que ha 
 
 
 pygame.init()
+
+pygame.mixer.init()  # Inicialitzar el mòdul de so de Pygame
+# Carregar la música de fons
+pygame.mixer.music.load(MUSICA_FONS)  # Carrega el fitxer de música
+# Reproduir la música en loop (indefinidament)
+pygame.mixer.music.play(-1)  # -1 significa que la música es repetirà infinitament
+pygame.mixer.music.set_volume(0.3)
+
+disparo_so = pygame.mixer.Sound(DISPARO_SO)
+
 pantalla = pygame.display.set_mode((AMPLADA, ALTURA))
 pygame.display.set_caption("Arcade")
 
@@ -76,7 +87,7 @@ def mostrar_credits():
     img1 = font1.render("MONKEY SPACE!", True, MAGENTA)
     img2= font2.render("Programacio: Claudi López", True, WHITE)
     img3 = font2.render("Grafics: Claudi López", True, WHITE)
-    img4 = font2.render("Musica:", True, WHITE)
+    img4 = font2.render("Musica: Pixabay", True, WHITE)
     img5 = font2.render("Sons: Freesound", True, WHITE)
 
     pantalla.blit(img1, (100, 30))
@@ -128,10 +139,15 @@ while True:
                 if event.key == K_w and current_time - temps_ultima_bala_jugador1 >= temps_entre_bales:
                     bales_jugador1.append(pygame.Rect(player_rect.centerx - 2, player_rect.top, 4, 10))
                     temps_ultima_bala_jugador1 = current_time
+                    disparo_so.play()  # Aquí es fa sonar el disparo
+
+
                 # jugador 2
                 if event.key == K_UP and current_time - temps_ultima_bala_jugador2 >= temps_entre_bales:
                     bales_jugador2.append(pygame.Rect(player_rect2.centerx - 2, player_rect2.bottom -10, 4, 10))
                     temps_ultima_bala_jugador2 = current_time
+                    disparo_so.play()  # Aquí es fa sonar el disparo
+
     #Mostrar Pantalla Menu
     if pantalla_actual == 1:
         mostrar_menu()
@@ -147,6 +163,7 @@ while True:
         img = font.render(text, True, MAGENTA)
         pantalla.blit(img,(200,30))
     #Mostrar pantalla de joc
+
     if pantalla_actual == 3:
         # Moviment del jugador 1
         keys = pygame.key.get_pressed()
